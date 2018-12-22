@@ -51,7 +51,11 @@ class McoinhiveController  extends CaptchaController
         $responseAssets = ResponseAssetGroup::get();
         $responseAssets->requireAsset('mcoinhive');
 
-		echo '<div class="coinhive-captcha" data-hashes="' . $config->get('captcha.hashes') . '" data-key="' . $config->get('captcha.site_key') . '">';		
+		
+
+		
+		
+		echo '<div class="coinhive-captcha" data-hashes="' . $config->get('captcha.hashes') . '" data-key="' . $config->get('captcha.site_key') . '" data-whitelabel="' . $config->get('captcha.whitelabel') .'">';		
 		echo '<em>Loading Captcha...<br>';
 		echo "If it doesn't load, please disable Adblock!</em>";
 		echo '</div>';
@@ -82,6 +86,21 @@ class McoinhiveController  extends CaptchaController
         $pkg = Package::getByHandle('mcoinhive');
         $config = $pkg->getConfig();
 
+		
+		// Check data before send
+		if($config->get('captcha.secret_key') == NULL)
+		{
+			throw new Exception("Not provided secret key !");
+		}
+		else if($config->get('captcha.hashes') == NULL)
+		{
+			throw new Exception("Not provided hashes !");
+		}
+		else if($_REQUEST['coinhive-captcha-token'] == NULL)
+		{
+			return false;
+			exit("EMPTY CAPTCHA TOKEN");
+		}
         $qsa = [
                 'secret' => $config->get('captcha.secret_key'),
                 'token' => $_REQUEST['coinhive-captcha-token'],
@@ -103,7 +122,7 @@ class McoinhiveController  extends CaptchaController
                 );
             }
         }
-
+      
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, Config::get('app.curl.verifyPeer'));
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
