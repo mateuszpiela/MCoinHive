@@ -1,5 +1,5 @@
-# MCoinHive Captcha Library
-MCoinHive Captcha Library for Concrete5
+# MCoinHive Captcha 
+MCoinHive Captcha for Concrete5
 It's add CoinHive Captcha into your Concrete5 website
 # Installation
 1. Download ZIP from Clone or Download menu
